@@ -18,7 +18,7 @@ type Props = {
 
 const AddressDisplay = ({ network, addresses, onDisconnect }: Props) => {
   return (
-    <div>
+    <div className="h-[100vh] flex items-center justify-center">
       <Card>
         <CardHeader>Connected to {network}</CardHeader>
         {addresses.length > 0 ? (
@@ -29,7 +29,7 @@ const AddressDisplay = ({ network, addresses, onDisconnect }: Props) => {
                 <Button variant="ghost">{address.address}</Button>
               </CardContent>
               <CardContent className="font-bold m-2">
-                {address.purpose?.toUpperCase() + " PUBKEY"}
+                {address.purpose?.toUpperCase() + " PUBLICKEY"}
                 <Button variant="ghost">{address.publicKey}</Button>
               </CardContent>
             </div>
