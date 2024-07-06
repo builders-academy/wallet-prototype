@@ -9,20 +9,18 @@ type Props = {
 
 const AddressDisplay = ({ network, addresses, onDisconnect }: Props) => {
   return (
-    <div className="card">
-      <span>
-        Connected Network - {network ? network : "Connect Your wallet first"}
-      </span>
-
-      {addresses.map((address) => (
-        <ul key={address.publicKey}>
-          <li>{address.purpose}</li>
-          <li>{address.address}</li>
-          <li>{address.publicKey}</li>
-        </ul>
-      ))}
-      <br />
-      <button onClick={onDisconnect}>Disconect</button>
+    <div>
+      <p>{network}</p>
+      {addresses.length > 0 ? (
+        addresses.map((address, index) => (
+          <div key={address.publicKey}>
+            <p>{address.address}</p>
+            <button onClick={onDisconnect}>Disconnect</button>
+          </div>
+        ))
+      ) : (
+        <p>Connect your wallet first</p>
+      )}
     </div>
   );
 };

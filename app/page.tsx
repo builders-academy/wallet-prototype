@@ -1,12 +1,10 @@
 "use client";
-import React from "react";
 import AddressDisplay from "@/components/Address/AddressDisplay";
-
 import {
+  Address,
   AddressPurpose,
   BitcoinNetworkType,
   getAddress,
-  type Address,
 } from "sats-connect";
 import useLocalStorage from "@/hooks/useLocalStorage";
 
@@ -16,6 +14,9 @@ const Home = () => {
     "addresses",
     []
   );
+
+  const isConnected = addressInfo.length > 0;
+
   const onConnect = async () => {
     getAddress({
       payload: {
@@ -30,7 +31,6 @@ const Home = () => {
         },
       },
       onFinish: (response) => {
-        // console.log(response.addresses);
         setAddressInfo(response.addresses);
       },
       onCancel: () => {
@@ -42,15 +42,27 @@ const Home = () => {
   const onDisconnect = () => {
     setAddressInfo([]);
   };
-  return (
-    <div>
-      <button onClick={onConnect}>Connect</button>
 
-      <AddressDisplay
-        network={network}
-        addresses={addressInfo}
-        onDisconnect={onDisconnect}
-      />
+  if (!isConnected) {
+    return (
+      <div className="App">
+        <header className="App-header">
+          <p>Connected to {network}</p>
+          <p>Click the button to connect your wallet</p>
+          <button onClick={onConnect}>Connect</button>
+        </header>
+      </div>
+    );
+  }
+  return (
+    <div className="App">
+      <div className="App-body">
+        <AddressDisplay
+          network={network}
+          addresses={addressInfo}
+          onDisconnect={onDisconnect}
+        />
+      </div>
     </div>
   );
 };

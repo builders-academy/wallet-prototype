@@ -31,7 +31,7 @@ function useLocalStorage<T>(key: string, defaultValue?: T) {
       setValue(tryParse<T>(storedValue, defaultValue));
       setIsMounted(true);
     }
-  }, [lookupKey, defaultValue]);
+  }, [lookupKey]);
 
   const set = (newValue: T | undefined) => {
     if (!isMounted) return;
@@ -48,3 +48,5 @@ function useLocalStorage<T>(key: string, defaultValue?: T) {
 }
 
 export default useLocalStorage;
+
+// export const useLocalStorage = (key: string) => {};
