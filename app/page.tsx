@@ -7,6 +7,13 @@ import {
   getAddress,
 } from "sats-connect";
 import useLocalStorage from "@/hooks/useLocalStorage";
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+} from "@/components/ui/card";
 
 const Home = () => {
   const network = BitcoinNetworkType.Mainnet;
@@ -45,24 +52,26 @@ const Home = () => {
 
   if (!isConnected) {
     return (
-      <div className="App">
-        <header className="App-header">
-          <p>Connected to {network}</p>
-          <p>Click the button to connect your wallet</p>
-          <button onClick={onConnect}>Connect</button>
-        </header>
-      </div>
+      <>
+        <Card>
+          <CardHeader>Connected to {network}</CardHeader>
+          <CardContent>
+            <p>Click the button to connect your wallet</p>
+          </CardContent>
+          <CardFooter>
+            <Button onClick={onConnect}>Connect</Button>
+          </CardFooter>
+        </Card>
+      </>
     );
   }
   return (
     <div className="App">
-      <div className="App-body">
-        <AddressDisplay
-          network={network}
-          addresses={addressInfo}
-          onDisconnect={onDisconnect}
-        />
-      </div>
+      <AddressDisplay
+        network={network}
+        addresses={addressInfo}
+        onDisconnect={onDisconnect}
+      />
     </div>
   );
 };
