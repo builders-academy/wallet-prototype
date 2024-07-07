@@ -1,6 +1,6 @@
 "use client";
-import { useEffect, useState } from "react";
-import AddressDisplay from "@/components/Address/AddressDisplay";
+import React, { useEffect, useState } from "react";
+import { getAgentExecutor } from "@/agents/analyst";
 import {
   Address,
   AddressPurpose,
@@ -16,7 +16,6 @@ import {
   CardHeader,
 } from "@/components/ui/card";
 
-// Define the type for balance data
 interface BalanceData {
   balance: string;
   locked: string;
@@ -33,6 +32,9 @@ const Home: React.FC = () => {
     []
   );
   const [balanceData, setBalanceData] = useState<BalanceData | null>(null);
+  const [scrapingResult, setScrapingResult] = useState<string | null>(null);
+  // const [userInput, setUserInput] = useState<string>("");
+  const [agentResponse, setAgentResponse] = useState<string | null>(null);
 
   const isConnected = addressInfo.length > 0;
 
@@ -68,7 +70,6 @@ const Home: React.FC = () => {
   );
 
   const stackAddress = stackAddressInfo?.address;
-  // console.log(stackAddress);
 
   const getBalance = async () => {
     if (!stackAddress) {
@@ -81,7 +82,6 @@ const Home: React.FC = () => {
         `https://api.mainnet.hiro.so/v2/accounts/${stackAddress}`
       );
       const data: BalanceData = await res.json();
-      // console.log(data);
       setBalanceData(data);
     } catch (error) {
       console.error("Error fetching balance:", error);
@@ -94,13 +94,29 @@ const Home: React.FC = () => {
     }
   }, [stackAddress]);
 
+  const handleAgentInvocation = async () => {
+    try {
+      const agentExecutor = await getAgentExecutor();
+      const response = await agentExecutor.invoke({
+        input: `Fetch the most beneficial swap options based on the current balance. The balance is: 40 stx. Please do not provide detailed information on available swap options, just provide the best one including the potential benefits and any associated fees or risks. The data should be specific to the current balance and pool token stats and should help in making an informed decision for the best swap option.
+`,
+      });
+      setAgentResponse(response.output); // assuming response has a property 'output'
+    } catch (error) {
+      console.error("Error invoking agent:", error);
+    }
+  };
+
+  const handleSubmit = (e: any) => {
+    e.preventDefault();
+    handleAgentInvocation();
+  };
+
   if (!isConnected) {
     return (
       <Card>
         <CardHeader>Connected to {network}</CardHeader>
-        <CardContent>
-          <CardContent>Click the button to connect your wallet</CardContent>
-        </CardContent>
+        <CardContent>Click the button to connect your wallet</CardContent>
         <CardFooter>
           <Button onClick={onConnect}>Connect</Button>
         </CardFooter>
@@ -109,22 +125,38 @@ const Home: React.FC = () => {
   }
 
   return (
-    <div className="App flex justify-center items-center gap-4">
-      <AddressDisplay
-        network={network}
-        addresses={addressInfo}
-        onDisconnect={onDisconnect}
-      />
-
+    <div className="App flex justify-center items-center gap-4 flex-col">
       {balanceData && (
         <Card>
           <CardHeader>Balance Information</CardHeader>
-          <CardContent>Balance: {balanceData.balance}</CardContent>
-          <CardContent>Locked: {balanceData.locked}</CardContent>
-          <CardContent>Unlock Height: {balanceData.unlock_height}</CardContent>
-          <CardContent>Nonce: {balanceData.nonce}</CardContent>
-          <CardContent>Balance Proof: {balanceData.balance_proof}</CardContent>
-          <CardContent>Nonce Proof: {balanceData.nonce_proof}</CardContent>
+          <CardContent> Stx-Balance: {balanceData.balance}</CardContent>
+          <Button onClick={onDisconnect} variant="destructive">
+            Disconnect
+          </Button>
+        </Card>
+      )}
+
+      {scrapingResult && (
+        <Card>
+          <CardHeader>Scraping Result</CardHeader>
+          <CardContent>{scrapingResult}</CardContent>
+        </Card>
+      )}
+
+      <form onSubmit={handleSubmit}>
+        {/* <input
+          type="text"
+          value={userInput}
+          onChange={(e) => setUserInput(e.target.value)}
+          placeholder="Enter your input"
+        /> */}
+        <Button type="submit">Analyze my Stacks</Button>
+      </form>
+
+      {agentResponse && (
+        <Card>
+          <CardHeader>Agent Response</CardHeader>
+          <CardContent>{agentResponse}</CardContent>
         </Card>
       )}
     </div>
