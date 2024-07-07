@@ -98,7 +98,7 @@ const Home: React.FC = () => {
     try {
       const agentExecutor = await getAgentExecutor();
       const response = await agentExecutor.invoke({
-        input: `Fetch the most beneficial swap options based on the current balance. The balance is: 40 stx. Please do not provide detailed information on available swap options, just provide the best one including the potential benefits and any associated fees or risks. The data should be specific to the current balance and pool token stats and should help in making an informed decision for the best swap option.
+        input: `Fetch the most beneficial swap options based on the current balance. The balance is: ${balanceData?.balance} stx. Please do not provide detailed information on available swap options, just provide the best one including the potential benefits and any associated fees or risks. The data should be specific to the current balance and pool token stats and should help in making an informed decision for the best swap option.
 `,
       });
       setAgentResponse(response.output); // assuming response has a property 'output'
