@@ -12,7 +12,7 @@ export async function createAgent(
   systemPrompt: string
 ): Promise<Runnable> {
   // Each worker node will be given a name and some tools.
-  const prompt = await ChatPromptTemplate.fromMessages([
+  const prompt = ChatPromptTemplate.fromMessages([
     ["system", systemPrompt],
     new MessagesPlaceholder("messages"),
     new MessagesPlaceholder("agent_scratchpad"),

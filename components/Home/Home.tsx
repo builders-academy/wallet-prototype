@@ -34,6 +34,7 @@ const Home: React.FC = () => {
   const [balanceData, setBalanceData] = useState<BalanceData | null>(null);
   const [scrapingResult, setScrapingResult] = useState<string | null>(null);
   // const [userInput, setUserInput] = useState<string>("");
+  const [isLoading, setIsLoading] = useState(false);
   const [agentResponse, setAgentResponse] = useState<string | null>(null);
 
   const isConnected = addressInfo.length > 0;
@@ -95,13 +96,15 @@ const Home: React.FC = () => {
   }, [stackAddress]);
 
   const handleAgentInvocation = async () => {
+    setIsLoading(true);
     try {
       const agentExecutor = await getAgentExecutor();
       const response = await agentExecutor.invoke({
-        input: `Fetch the most beneficial swap options based on the current balance. The balance is: ${balanceData?.balance} stx. Please do not provide detailed information on available swap options, just provide the best one including the potential benefits and any associated fees or risks. The data should be specific to the current balance and pool token stats and should help in making an informed decision for the best swap option.
-`,
+        input: `Please analyze the most advantageous swap options considering the current balance of ${balanceData?.balance} STX. This analysis should assist in making a well-informed decision for the optimal swap option with benefits.`,
       });
+
       setAgentResponse(response.output); // assuming response has a property 'output'
+      setIsLoading(false);
     } catch (error) {
       console.error("Error invoking agent:", error);
     }
@@ -150,7 +153,9 @@ const Home: React.FC = () => {
           onChange={(e) => setUserInput(e.target.value)}
           placeholder="Enter your input"
         /> */}
-        <Button type="submit">Analyze my Stacks</Button>
+        <Button type="submit" disabled={isLoading}>
+          {isLoading ? "Loading..." : "Provide Insights"}
+        </Button>
       </form>
 
       {agentResponse && (

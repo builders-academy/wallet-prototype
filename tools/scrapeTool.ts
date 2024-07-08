@@ -15,7 +15,8 @@ export const getAllExistingSwaps = new DynamicStructuredTool({
   schema: z.object({}),
   func: async ({}) => {
     const loader = await axios.get("https://api.alexgo.io/v1/allswaps");
-    return JSON.stringify(loader);
+    const response = loader.data;
+    return JSON.stringify(response);
   },
 });
 
@@ -26,6 +27,7 @@ export const getLiquidityInTimeSeries = new DynamicStructuredTool({
   schema: z.object({}),
   func: async ({}) => {
     const loader = await axios.get("https://api.alexgo.io/v1/pool_token_stats");
-    return JSON.stringify(loader);
+    const response = loader.data;
+    return JSON.stringify(response);
   },
 });
