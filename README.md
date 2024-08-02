@@ -1,1 +1,1 @@
-# Smart Wallet
+# Smart Wallet Prototype
